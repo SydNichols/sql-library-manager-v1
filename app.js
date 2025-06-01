@@ -49,7 +49,7 @@ module.exports = app;
     console.log('Connection successful!');
 
     await sequelize.sync();
-    console.log('Synces successfully');
+    console.log('Synced successfully');
   } catch (error) {
     console.error('Error connecting:', error)
   }
