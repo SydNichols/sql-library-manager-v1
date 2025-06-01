@@ -10,9 +10,11 @@ router.get('/new', (req, res) => {
 //adding books to list
 router.post('/new', async (req, res, next) => {
     try {
+        //create new book with the form
         const book = await Book.create(req.body);
         res.redirect('/books');
     } catch (error) {
+        //catch for validation errors with the title
         if (error.name === 'SequelizeValidationError') {
             const book = await Book.build(req.body);
             res.render('new-book', {
@@ -33,17 +35,18 @@ router.get('/', async(req, res, next) => {
         res.render('index', { books, title:'Books' });
     } catch (error) {
         next(error);
-        //res.send(`Error: ${error.message}`)
     }
 });
 
 //render the book details
 router.get('/:id', async (req, res, next) => {
     try {
+        //find the book by id using findByPk
         const book = await Book.findByPk(req.params.id);
         if (book) {
             res.render('update-book', {book, title: book.title });
         } else {
+            //404 if not found
             const err = new Error();
             err.status = 404;
             err.message = "Sorry! We couldn't find the book you were looking for.";
@@ -56,12 +59,14 @@ router.get('/:id', async (req, res, next) => {
 
 //update book POST
 router.post('/:id', async (req, res, next) => {
+    //pull up book by id
     try {
         const book = await Book.findByPk(req.params.id);
         if (book) {
             await book.update(req.body);
             res.redirect('/books');
         } else {
+            //404 if book not found
             const err = new Error();
             err.status = 404;
             err.message = "Sorry! We couldn't find the book you were looking for.";
@@ -69,6 +74,7 @@ router.post('/:id', async (req, res, next) => {
         }
     } catch (error) {
         if (error.name === 'SequelizeValidationError') {
+            //hande validation errors
             const book = await Book.build(req.body);
             book.id = req.params.id;
             res.render('update-book', {
@@ -87,6 +93,7 @@ router.post('/:id/delete', async (req, res, next) => {
     try {
         const book = await Book.findByPk(req.params.id);
         if (book) {
+            //redirect to books homepage after book is deleted
             await book.destroy();
             res.redirect('/books');
         } else {
