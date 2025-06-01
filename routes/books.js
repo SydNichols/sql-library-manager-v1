@@ -54,4 +54,32 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
+//update book POST
+router.post('/:id', async (req, res, next) => {
+    try {
+        const book = await Book.findByPk(req.params.id);
+        if (book) {
+            await book.update(req.body);
+            res.redirect('/books');
+        } else {
+            const err = new Error();
+            err.status = 404;
+            err.message = "Sorry! We couldn't find the book you were looking for.";
+            next(err);
+        }
+    } catch (error) {
+        if (error.name === 'SequelizeValidationError') {
+            const book = await Book.build(req.body);
+            book.id = req.params.id;
+            res.render('update-book', {
+                book,
+                errors: error.errors,
+                title: 'Update Book'
+            });
+        } else {
+            next(error);
+        }
+    }
+});
+
 module.exports = router;
