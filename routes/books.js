@@ -37,4 +37,21 @@ router.get('/', async(req, res, next) => {
     }
 });
 
+//render the book details
+router.get('/:id', async (req, res, next) => {
+    try {
+        const book = await Book.findByPk(req.params.id);
+        if (book) {
+            res.render('update-book', {book, title: book.title });
+        } else {
+            const err = new Error();
+            err.status = 404;
+            err.message = "Sorry! We couldn't find the book you were looking for.";
+            next(err);
+        }
+    } catch (error) {
+        next(error);
+    }
+});
+
 module.exports = router;

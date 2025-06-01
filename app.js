@@ -31,7 +31,8 @@ app.use(function(req, res, next) {
   const err = new Error();
   err.status = 404;
   err.message = "Sorry! We couldn't find the page you were looking for.";
-  res.render('page-not-found', { err });
+  next(err)
+  //res.render('page-not-found', { err });
 });
 
 // error handler
@@ -44,7 +45,7 @@ app.use(function(err, req, res, next) {
   console.log('Error Message:', err.message);
 
   res.status(err.status);
-  res.render('error', { err })
+  res.render('error', { error: err })
   
 });
 
