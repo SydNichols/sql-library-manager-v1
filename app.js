@@ -28,11 +28,14 @@ app.use('/books', booksRouter);
 
 // improved 404 error handler using template
 app.use(function(req, res, next) {
-  const err = new Error();
-  err.status = 404;
-  err.message = "Sorry! We couldn't find the page you were looking for.";
-  next(err)
-  //res.render('page-not-found', { err });
+  res.status(404);
+  res.render('page-not-found', {
+    title: 'Page Not Found',
+    error: {
+      status: 404,
+      message: "Sorry! We couldn't find the page you were looking for."
+    }
+  });
 });
 
 // error handler
@@ -45,8 +48,7 @@ app.use(function(err, req, res, next) {
   console.log('Error Message:', err.message);
 
   res.status(err.status);
-  res.render('error', { error: err })
-  
+  res.render('error', { error: err, title: 'Server Error' });
 });
 
 module.exports = app;
