@@ -13,7 +13,7 @@ block content
       if search 
         | 
         a.button(href="/books") Show All
- 
+
   table 
     thead 
       tr 
@@ -30,20 +30,20 @@ block content
           td #{book.genre}
           td #{book.year}
 
-if totalPages > 1
-  p 
-    if currentPage > 1
-      - var prevPage = currentPage - 1
-      if search
-        a.button(href=`/books?page=${prevPage}&search=${search}`) Previous 
-      else
-        a.button(href=`/books?page=${prevPage}`) Previous 
-    |     
-    span Page #{currentPage} of  totalPages
-    | 
-    if currentPage < totalPages 
-      - var nextPage = currentPage + 1
-      if search 
-        a.button(href=`/books?page=${nextPage}&search=${search}`) Next 
-      else 
-        a.button(href=`/books?page=${nextPage}`) Next
+  if totalPages > 1
+    p 
+      if currentPage > 1
+        - var prevPage = currentPage - 1
+        if search
+          a.button(href=`/books?page=${prevPage}&search=${search}`) Previous 
+        else
+          a.button(href=`/books?page=${prevPage}`) Previous 
+      |     
+      span Page #{currentPage} of #{totalPages} Total Pages
+      | 
+      if currentPage < totalPages 
+        - var nextPage = currentPage + 1
+        if search 
+          a.button(href=`/books?page=${nextPage}&search=${search}`) Next 
+        else 
+          a.button(href=`/books?page=${nextPage}`) Next
