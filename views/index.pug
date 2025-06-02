@@ -5,6 +5,15 @@ block content
   p 
     a.button(href="/books/new") Create New Book 
 
+  form(method="get" action="/books")
+    p 
+      label(for="search") Search: 
+      input(name="search" type="text" id="search" value=search placeholder="Search books...")
+      input(type="submit" value="Search")
+      if search 
+        | 
+        a.button(href="/books") Show All
+ 
   table 
     thead 
       tr 
