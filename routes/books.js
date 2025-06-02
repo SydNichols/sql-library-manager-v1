@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Book } = require('../models');
+const { LIMIT_LENGTH } = require('sqlite3');
 
 
 
@@ -30,17 +31,20 @@ router.post('/new', async (req, res, next) => {
     }
 });
 
-//render books from list + search functionality for extra credit
+//render books from list + search functionality and pagination for extra credit 
 router.get('/', async(req, res, next) => {
     try {
         const search = req.query.search;
-        let books;
+        //default the page to page 1
+        const page = parseInt(req.query.page) || 1;
+        const limit = 10;
+        const offset = (page - 1) * limit;
+        let result;
 
         if (search) {
             const { Op } = require('sequelize');
-
-            //search all fields
-            books = await Book.findAll({
+            //findAll changed to findAndCountAll
+            result = await Book.findAndCountAll({
                 where: {
                     [Op.or]: [
                         { title: { [Op.like]: `%${search}%` } },
@@ -48,16 +52,31 @@ router.get('/', async(req, res, next) => {
                         { genre: { [Op.like]: `%${search}%` } },
                         { year: { [Op.like]: `%${search}%` } }
                     ]
-                }
+                },
+                limit: limit,
+                offset: offset
             });
         } else {
-            books = await Book.findAll();
+            result = await Book.findAndCountAll({
+                limit: limit,
+                offset: offset
+            });
         }
-        //render the list of books with the search term
-        res.render('index', { books, search, title: 'Books' });
+
+        const books = result.rows
+        const totalPages = Math.ceil(result.count / limit);
+
+        //render all books
+        res.render('index', {
+            books,
+            search,
+            currentPage: page,
+            totalPages: totalPages,
+            title: 'Books'
+        });
     } catch (error) {
-        next(error);
-    }
+        next (error);
+    }       
 });
 
 //render the book details

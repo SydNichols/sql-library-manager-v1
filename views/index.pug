@@ -29,3 +29,21 @@ block content
           td #{book.author}
           td #{book.genre}
           td #{book.year}
+
+if totalPages > 1
+  p 
+    if currentPage > 1
+      - var prevPage = currentPage - 1
+      if search
+        a.button(href=`/books?page=${prevPage}&search=${search}`) Previous 
+      else
+        a.button(href=`/books?page=${prevPage}`) Previous 
+    |     
+    span Page #{currentPage} of  totalPages
+    | 
+    if currentPage < totalPages 
+      - var nextPage = currentPage + 1
+      if search 
+        a.button(href=`/books?page=${nextPage}&search=${search}`) Next 
+      else 
+        a.button(href=`/books?page=${nextPage}`) Next
